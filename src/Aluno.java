@@ -1,3 +1,5 @@
+package src;
+
 class Aluno {
   int numero;
   String nome;

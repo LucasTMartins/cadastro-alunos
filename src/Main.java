@@ -1,16 +1,19 @@
+package src;
+
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Stack;
-import java.util.Vector;
-
-import javax.management.Query;
 
 public class Main {
 
   static Scanner sc = new Scanner(System.in);
 
   public static void main(String[] args) {
+      System.out.println("\nNome: Lucas Martins de Oliveira"
+              + "\nMatéria: Estrutura de Dados"
+              + "\nProfessor: Ricardo Vilaverde"
+              + "\nInstituição: UNIFAN");
 
       Stack<Aluno> pilhaAlunos = new Stack<>();
       Queue<Nota> filaNotas = new LinkedList<>();
@@ -59,9 +62,10 @@ public class Main {
   }
 
   private static void cadastrarAluno(Stack<Aluno> pilhaAlunos) {
+      sc.nextLine();
       int numero = pilhaAlunos.size() + 1;
       System.out.print("Nome do aluno: ");
-      String nome = sc.next();
+      String nome = sc.nextLine();
 
       Aluno aluno = new Aluno(numero, nome);
       pilhaAlunos.push(aluno);
@@ -84,12 +88,11 @@ public class Main {
           Nota notaObj = new Nota(numeroAluno, nota);
           filaNotas.add(notaObj);
           System.out.println("Nota cadastrada.");
-          break;
+          return;
         }
       }
 
       System.out.println("Aluno não cadastrado.");
-      return;
   }
 
   private static void calcularMediaDeAluno(Stack<Aluno> pilhaAlunos, Queue<Nota> filaNotas) {
@@ -120,11 +123,11 @@ public class Main {
 
         double media = somaNotas / quantidadeNotas;
         System.out.println("Média do aluno = " + media);
+        return;
       }
     }
 
     System.out.println("Aluno não cadastrado.");
-    return;
   }
 
   private static void listarAlunosSemNotas(Stack<Aluno> pilhaAlunos, Queue<Nota> filaNotas) {
@@ -132,13 +135,55 @@ public class Main {
       System.out.println("Pilha de alunos vazia.");
       return;
     }
+    Stack<Aluno> pilhaBackup = (Stack<Aluno>) pilhaAlunos.clone();
+
+    boolean todosTemNota = true;
 
     System.out.println("Alunos sem notas:");
 
-    while (!pilhaAlunos.isEmpty()) {
-      Aluno aluno = pilhaAlunos.pop();
+    while (!pilhaBackup.isEmpty()) {
+      Aluno aluno = pilhaBackup.pop();
 
-      
+        if (filaNotas.isEmpty() || filaNotas.peek().numeroAluno != aluno.numero) {
+            System.out.println(aluno.numero + " - " + aluno.nome);
+            todosTemNota = false;
+        }
+    }
+
+    if (todosTemNota){
+        System.out.println("Todos os alunos possuem nota");
     }
   }
+
+    private static Stack<Aluno> excluirAluno(Stack<Aluno> pilhaAlunos, Queue<Nota> filaNotas) {
+        if (pilhaAlunos.isEmpty()) {
+            System.out.println("Pilha de alunos vazia.");
+            return pilhaAlunos;
+        }
+
+        Aluno aluno = pilhaAlunos.pop();
+
+        for (Nota nota : filaNotas) {
+            if (nota.numeroAluno == aluno.numero) {
+                System.out.println("Este aluno possui notas, logo, não poderá ser excluído.");
+                pilhaAlunos.push(aluno);
+                return pilhaAlunos;
+            }
+        }
+
+        System.out.println("Aluno excluído.");
+        return pilhaAlunos;
+    }
+
+    private static Queue<Nota> excluirNota(Queue<Nota> filaNotas) {
+        if (filaNotas.isEmpty()) {
+            System.out.println("Fila de notas vazia.");
+            return filaNotas;
+        }
+
+        filaNotas.remove();
+
+        System.out.println("Nota excluída.");
+        return filaNotas;
+    }
 }
